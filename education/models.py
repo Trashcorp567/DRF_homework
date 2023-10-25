@@ -1,10 +1,12 @@
 from django.db import models
 
+from config import settings
 
 NULLABLE = {'blank': True, 'null': True}
 
 
 class Course(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
     name = models.CharField(max_length=150, verbose_name='название')
     image = models.ImageField(upload_to='media/', verbose_name='превью ', **NULLABLE)
     description = models.TextField(verbose_name='описание', **NULLABLE)
@@ -19,6 +21,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
     name = models.CharField(max_length=150, verbose_name='название')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, **NULLABLE)
     image = models.ImageField(upload_to='media/', verbose_name='превью ', **NULLABLE)

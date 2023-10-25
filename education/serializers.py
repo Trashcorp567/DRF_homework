@@ -5,7 +5,6 @@ from education.models import Course, Lesson, Payment
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    permission_classes = [IsAuthenticated]
 
     class Meta:
         model = Lesson
@@ -22,7 +21,6 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_number_of_lessons(self, instance):
         return instance.lesson_set.count()
-
 
 
 class PaymentSerializer(serializers.ModelSerializer):

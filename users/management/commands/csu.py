@@ -7,9 +7,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user = User.objects.create(
-            email='admin@gmail.com',
-            is_staff=True,
-            is_superuser=True
+            email='manager@gmail.com',
+            is_staff=False,
+            is_superuser=False,
         )
 
         user.set_password('123qwe456rty')
