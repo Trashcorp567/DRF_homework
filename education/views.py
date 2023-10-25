@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
 
 from education.models import Course, Lesson, Payment
 from education.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
@@ -9,6 +10,7 @@ from education.serializers import CourseSerializer, LessonSerializer, PaymentSer
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class LessonCreateAPIView(generics.CreateAPIView):

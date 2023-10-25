@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 
 from education.models import Course, Lesson, Payment
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    permission_classes = [IsAuthenticated]
 
     class Meta:
         model = Lesson
