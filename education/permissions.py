@@ -1,4 +1,7 @@
+from rest_framework import permissions
 from rest_framework.permissions import BasePermission
+
+from education.models import Subscription
 
 
 class ModerateCoursesAndLessons(BasePermission):
@@ -9,4 +12,5 @@ class ModerateCoursesAndLessons(BasePermission):
         if request.user.is_staff:
             return True
 
-        return request.user == view.get_object().owner
+        if request.user and request.method in ['GET']:
+            return True

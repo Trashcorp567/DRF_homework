@@ -35,7 +35,7 @@ class Lesson(models.Model):
 
 class Payment(models.Model):
     payment_choice = [('cash', 'Наличные'), ('bank_transfer', 'Перевод на счет')]
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь', **NULLABLE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='пользователь', **NULLABLE)
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name='время платежа', **NULLABLE)
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='payments', **NULLABLE)
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payments', **NULLABLE)
@@ -48,3 +48,17 @@ class Payment(models.Model):
     class Meta:
         verbose_name = 'платеж'
         verbose_name_plural = 'платежи'
+
+
+class Subscription(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь')
+    active_sub = models.BooleanField(default=False, verbose_name='статус подписки')
+
+    def __str__(self):
+        return f'{self.user, self.course, self.active_sub}'
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+
