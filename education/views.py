@@ -1,12 +1,11 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
-from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import AllowAny
 
-from education.models import Course, Lesson, Payment, Subscription
+
+from education.models import Course, Lesson, Subscription
 from education.paginators import CoursePaginator
 from education.permissions import ModerateCoursesAndLessons
-from education.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
+from education.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -14,6 +13,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     permission_classes = [AllowAny]
     pagination_class = CoursePaginator
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -43,22 +45,6 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = [AllowAny]
-
-
-class PaymentListAPIView(generics.ListAPIView):
-    serializer_class = PaymentSerializer
-    queryset = Payment.objects.all()
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('paid_lesson', 'paid_course', 'pay_method')
-    ordering_fields = ('payment_date',)
-
-
-class PaymentCreateAPIView(generics.CreateAPIView):
-    serializer_class = PaymentSerializer
-
-
-class PaymentDestroyAPIView(generics.DestroyAPIView):
-    queryset = Payment.objects.all()
 
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):

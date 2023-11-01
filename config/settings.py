@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'payment',
     'rest_framework',
     'users',
     'education',
     'django_filters',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'drf_yasg',
+
 
 ]
 
