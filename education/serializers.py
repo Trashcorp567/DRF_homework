@@ -4,7 +4,6 @@ from users.models import User
 
 
 class LessonSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Lesson
         fields = '__all__'
@@ -23,22 +22,13 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    subscription = serializers.SerializerMethodField()
+    subscription = SubscriptionSerializer(source='is_subscribed', read_only=True, many=True)
     lesson = LessonSerializer(source='lesson_set', many=True, read_only=True)
     number_of_lessons = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = '__all__'
-
-    def get_subscription(self, value):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            user = request.user
-            is_subscribed = Subscription.objects.filter(course=value, user=user, active_sub=True).exists()
-            if is_subscribed:
-                return 'Подписка активна'
-        return 'Подписка отсутствует'
 
     def get_number_of_lessons(self, instance):
         return instance.lesson_set.count()

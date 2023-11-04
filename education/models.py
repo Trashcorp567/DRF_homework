@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils import timezone
 
 from config import settings
+from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -35,14 +37,15 @@ class Lesson(models.Model):
 
 
 class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь', blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь')
-    active_sub = models.BooleanField(default=False, verbose_name='статус подписки')
+    start_date = models.DateTimeField(verbose_name='дата подписки', default=timezone.now)
+    is_subscribed = models.BooleanField(verbose_name='статус', default=True)
+    email = models.EmailField(verbose_name='почта', **NULLABLE)
 
     def __str__(self):
-        return f'{self.user, self.course, self.active_sub}'
+        return f'{self.user}{self.course}'
 
     class Meta:
-        verbose_name = 'подписка'
-        verbose_name_plural = 'подписки'
-
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'

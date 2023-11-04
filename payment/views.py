@@ -1,3 +1,5 @@
+import os
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
@@ -17,7 +19,7 @@ class PaymentCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         payment = serializer.save()
-        stripe.api_key = "sk_test_51O7I7xCSnsbuF4sTZ0xNaOWOE3R7OESs6WnHeVwWG5RUdA30OJRRVjZisSWTAH4PHEffX065dVIwgHxGgg5zbD0y00up2ozLiZ"
+        stripe.api_key = os.getenv("STRIPE_KEY")
         pay = stripe.PaymentIntent.create(
             amount=payment.paid_cost,
             currency="usd",
@@ -39,7 +41,7 @@ class PaymentListAPIView(generics.ListAPIView):
 class GetPaymentView(APIView):
     '''Просмотр платежа по его id'''
     def get(self, request, payment_id):
-        stripe.api_key = "sk_test_51O7I7xCSnsbuF4sTZ0xNaOWOE3R7OESs6WnHeVwWG5RUdA30OJRRVjZisSWTAH4PHEffX065dVIwgHxGgg5zbD0y00up2ozLiZ"
+        stripe.api_key = os.getenv("STRIPE_KEY")
         payment_intent = stripe.PaymentIntent.retrieve(payment_id)
         print(payment_intent)
         return (Response

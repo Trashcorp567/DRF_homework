@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny
 
-
+from education.tasks import send_mailing_update, send_mailing_create
 from education.models import Course, Lesson, Subscription
 from education.paginators import CoursePaginator
 from education.permissions import ModerateCoursesAndLessons
@@ -15,7 +15,20 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = CoursePaginator
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        course = serializer.save()
+        course.owner = self.request.user
+        course.save()
+
+
+class CourseUpdateAPIView(generics.UpdateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+    def perform_update(self, serializer):
+        serializer.save()
+        sub = Subscription.objects.get('email')
+        send_mailing_update.delay(sub, Course)
+        return super().perform_update(serializer)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -48,7 +61,6 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
 
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):
-    queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
 
 

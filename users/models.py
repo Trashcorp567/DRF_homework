@@ -1,10 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from education.models import NULLABLE
-
-
 # Create your models here.
+NULLABLE = {'blank': True, 'null': True}
 
 
 class User(AbstractUser):
